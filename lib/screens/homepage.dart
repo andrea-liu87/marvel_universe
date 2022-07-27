@@ -7,7 +7,7 @@ import 'package:marvel_universe/data/http_helper.dart';
 import 'package:marvel_universe/model/comic_char.dart';
 
 import '../widgets/background_image.dart';
-import '../widgets/char_grid_view.dart';
+import '../widgets/char_page.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -42,7 +42,7 @@ class _HomepageState extends State<Homepage> {
               child: BlocBuilder<CharBloc, CharState>(
                 builder: (context, state) {
                   if (state is CharLoaded) {
-                    return CharGridView(state: state,);
+                    return CharPage(state: state,);
                   } else {
                     return Container();
                   }

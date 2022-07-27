@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:marvel_universe/constants/constants.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar();
+class SearchBar extends StatefulWidget {
+  Function callback;
+  SearchBar({Key? key, required this.callback}) : super(key: key);
+
+  @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +27,11 @@ class SearchBar extends StatelessWidget {
           const SizedBox(width: 8,),
           Expanded(
             child: TextFormField(
+              onChanged: (value){
+                setState(() {
+                  widget.callback(value);
+                });
+              },
               decoration: const InputDecoration(
                 isDense: true,
                 hintText: 'Search Character',

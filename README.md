@@ -1,6 +1,7 @@
 # marvel_universe
 
-Marvel fan project in Flutter
+</br>Marvel fan project in Flutter
+
 ![Screenshoot](https://github.com/andrea-liu87/marvel_universe/blob/master/assets/ss.jpg)
 
 ## Background

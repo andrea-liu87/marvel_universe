@@ -25,10 +25,11 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  http: ^0.13.4
   crypto: ^3.0.2
   equatable: ^2.0.3
   flutter_bloc: ^8.0.1
+  dio: ^4.0.4
+  dio_http_cache: ^0.3.0
 
 dev_dependencies:
   flutter_test:

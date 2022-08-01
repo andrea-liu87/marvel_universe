@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:flutter/material.dart';
 import 'package:marvel_universe/model/comic_char.dart';
 
 class HttpHelper {
@@ -17,12 +18,48 @@ class HttpHelper {
   }
 
   Future<List<ComicChar>> getData() async {
+    List<ComicChar> listChar = [];
+    int totalElements = 0;
+    int currentElements = 0;
+
+    totalElements = await getTotalElements();
+    while(currentElements < totalElements){
+      listChar.addAll(await get100Data(currentElements));
+      currentElements += 100;
+    }
+    return listChar;
+  }
+
+  Future<int> getTotalElements() async {
+    int totalElements = 0;
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uri url = Uri.https(baseUrl, '/v1/public/characters', {
       'apikey': apiKey,
       'hash': getHash(timestamp),
       'ts': '$timestamp',
-      'nameStartsWith': 'S',
+      'limit': '20'
+    });
+
+    Response response = await dio.get(url.toString());
+    if (response.statusCode == 200) {
+      var jsonResponse = response.data;
+      var data = jsonResponse['data'] as Map<String, dynamic>;
+      totalElements = data['total'];
+    } else {
+      print(
+          'Request failed with status: ${response.statusCode} ${response.data}');
+    }
+    return totalElements;
+  }
+
+  Future<List<ComicChar>> get100Data(int offset) async {
+    List<ComicChar> listChar = [];
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Uri url = Uri.https(baseUrl, '/v1/public/characters', {
+      'apikey': apiKey,
+      'hash': getHash(timestamp),
+      'ts': '$timestamp',
+      'offset': offset.toString(),
       'limit': '100'
     });
 
@@ -32,8 +69,6 @@ class HttpHelper {
         forceRefresh: true, //to force refresh
         maxStale: const Duration(days: 10),
     ));
-
-    List<ComicChar> listChar = [];
 
     if (response.statusCode == 200) {
       var jsonResponse = response.data;
@@ -53,7 +88,9 @@ class HttpHelper {
   Future<void> getThumbnail(String thumbnailUrl) async {
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     Uri url = Uri.https(baseUrl, '/v1/public/characters',
-        {'apikey': apiKey, 'hash': getHash(timestamp), 'ts': '$timestamp'});
+        {'apikey': apiKey,
+          'hash': getHash(timestamp),
+          'ts': '$timestamp'});
 
     dio.interceptors.add(DioCacheManager(CacheConfig(baseUrl: baseUrl)).interceptor);
     Response response = await dio.get(url.toString(), options: buildCacheOptions(

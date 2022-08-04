@@ -8,3 +8,5 @@
 
 Database for all Marvel character from resources marvel.com for ios and Android
 Creating with Flutter
+
+</br>Tech Stack : REST_API (diohttp), Caching data, Flutter BLoc pattern
